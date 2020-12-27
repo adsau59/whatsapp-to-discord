@@ -33,12 +33,14 @@ def group_message(_group_name: str, contact_name: str, message: str):
         supbot.send_message(group_name, reply, True)
 
     elif parts[0] == "!add" and len(parts) == 3:
+        if find_user(contact_name).get("admin", False):
+            old_list = config.get("members", [])
+            old_list.append({"contact": parts[1], "discord_id": parts[2]})
+            config.set("members", old_list)
 
-        old_list = config.get("members", [])
-        old_list.append({"contact": parts[1], "discord_id": parts[2]})
-        config.set("members", old_list)
-
-        supbot.send_message(group_name, "added successfully")
+            supbot.send_message(group_name, "added successfully")
+        else:
+            supbot.send_message(group_name, "You are not my master 😠")
 
     elif parts[0] in ["!quit", "!exit"]:
         if find_user(contact_name).get("admin", False):
@@ -56,6 +58,19 @@ def group_message(_group_name: str, contact_name: str, message: str):
         if user is None:
             return
         discord_client.send_message(client, user["discord_id"], to_send)
+
+    elif parts[0] == "!help":
+        supbot.send_message(group_name, """Hello! my name is DafqBot, powered by Supbot2 API
+        user commands:
+        !dc <message>: will send the message to discord
+        @all: will tag everyone in the group
+        !help: show this message again
+        
+        admin commands:
+        !add <number> <discord-id>: will add user to the database
+        !quit: quit the bot safely
+        
+        Apart form these commands, I also let my master know if someone hasn't interacted since a long time""")
 
 
 def forward_message(message):
