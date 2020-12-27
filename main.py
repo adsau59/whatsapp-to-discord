@@ -79,12 +79,11 @@ def forward_message(message):
 
 def main():
     with supbot:
-        supbot.send_message(group_name, "Hello, I'm Back 😊")
         supbot.wait_for_finish()
 
 
 if __name__ == '__main__':
-    supbot = Supbot(group_message_received=group_message)
+    supbot = Supbot(group_message_received=group_message, no_server=True)
     Thread(target=main).start()
     client = discord_client.MyClient(forward_message)
     client.run(discord_client.token)
